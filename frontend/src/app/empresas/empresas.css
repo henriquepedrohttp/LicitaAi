@@ -1,52 +1,52 @@
 .empresas { min-width: 0; overflow-wrap: anywhere; }
 .empresas h1 { font-size: clamp(28px, 3.4vw, 40px); }
 .empresas h2 { margin-top: 0; }
-.empresas .card { margin: 20px 0; border-color: #dde5eb; box-shadow: 0 2px 7px #18394e05; }
+.empresas .card { margin: 20px 0; border-color: var(--line); box-shadow: 0 2px 7px rgb(15 27 61 / 4%); }
 .empresas .actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin: 20px 0; }
 .empresas .actions button, .empresas .actions a { margin: 0; }
-.empresas .actions a { color: #087469; font-weight: 600; }
+.empresas .actions a { color: var(--brand); font-weight: 600; }
 .empresas .fields, .empresas dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-.empresas label { display: flex; flex-direction: column; gap: 8px; color: #3e5364; font-size: 13px; font-weight: 600; }
-.empresas input, .empresas select, .empresas textarea { width: 100%; min-width: 0; box-sizing: border-box; min-height: 44px; border: 1px solid #cdd8e0; background: #fbfcfe; border-radius: 8px; padding: 11px 12px; font: inherit; color: #182c38; }
+.empresas label { display: flex; flex-direction: column; gap: 8px; color: var(--ink-2); font-size: 13px; font-weight: 600; }
+.empresas input, .empresas select, .empresas textarea { width: 100%; min-width: 0; box-sizing: border-box; min-height: 44px; border: 1px solid var(--line-strong); background: var(--surface-2); border-radius: 8px; padding: 11px 12px; font: inherit; color: var(--ink); }
 .empresas textarea { min-height: 108px; resize: vertical; }
-.empresas input:focus-visible, .empresas select:focus-visible, .empresas textarea:focus-visible, .empresas summary:focus-visible { outline: 3px solid #087f74; outline-offset: 2px; }
+.empresas input:focus-visible, .empresas select:focus-visible, .empresas textarea:focus-visible, .empresas summary:focus-visible { outline: 3px solid var(--brand); outline-offset: 2px; }
 .empresas fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 .empresas legend { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
-.empresas dt, .empresas small { color: #526574; font-size: 13px; }
+.empresas dt, .empresas small { color: var(--muted); font-size: 13px; }
 .empresas dd { margin: 8px 0 0; overflow-wrap: anywhere; white-space: pre-wrap; line-height: 1.6; }
-.empresas .badge { display: inline-block; padding: 6px 9px; border-radius: 5px; background: #e3f1ec; color: #076459; font-size: 12px; }
-.empresas .secondary { color: #244453; background: #edf4f3; border: 1px solid #cdd8e0; }
-.empresas .danger { color: #8b302a; background: #fff0ed; }
+.empresas .badge { display: inline-block; padding: 6px 9px; border-radius: 5px; background: var(--brand-soft); color: var(--brand-strong); font-size: 12px; }
+.empresas .secondary { color: var(--ink-2); background: var(--brand-soft); border: 1px solid var(--line-strong); }
+.empresas .danger { color: var(--danger); background: var(--danger-soft); }
 .empresas .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 24px 0; }
-.empresas .tabs button { margin: 0; background: white; color: #244453; border: 1px solid #cdd8e0; }
-.empresas .tabs button[aria-pressed=true] { background: #087f74; color: white; border-color: #087f74; }
+.empresas .tabs button { margin: 0; background: white; color: var(--ink-2); border: 1px solid var(--line-strong); }
+.empresas .tabs button[aria-pressed=true] { background: var(--brand); color: white; border-color: var(--brand); }
 .empresas summary { cursor: pointer; font-weight: 600; padding: 12px 0; }
 .empresas li { line-height: 1.7; margin-bottom: 8px; overflow-wrap: anywhere; }
-.empresas .alert { border-left: 4px solid #bf7541; padding: 16px 20px; background: #fff7ed; margin: 20px 0; }
+.empresas .alert { border: 1px solid #f2d7a6; border-radius: var(--radius); padding: 16px 20px; background: var(--warn-soft); margin: 20px 0; }
 .empresas button { min-height: 44px; font-size: 14px; }
 .empresas button:disabled { cursor: wait; }
-.empresas .pitch-demo-label { font-size: 12px; color: #657783; margin: 20px 0 14px; }
+.empresas .pitch-demo-label { font-size: 12px; color: var(--muted); margin: 20px 0 14px; }
 .empresas .pitch-profile { display: flex; align-items: center; justify-content: space-between; gap: 24px; border-radius: 16px; padding: 30px; }
 .empresas .pitch-identity { display: flex; align-items: center; gap: 20px; min-width: 0; }
-.empresas .pitch-avatar { display: grid; place-items: center; flex: 0 0 72px; height: 72px; border-radius: 18px; background: #e3f1ec; color: #087469; font-size: 26px; font-weight: 750; }
+.empresas .pitch-avatar { display: grid; place-items: center; flex: 0 0 72px; height: 72px; border-radius: 18px; background: var(--brand-soft); color: var(--brand); font-size: 26px; font-weight: 750; }
 .empresas .pitch-profile h2 { font-size: clamp(21px, 3vw, 28px); margin: 7px 0; letter-spacing: -.6px; }
 .empresas .pitch-profile p { margin: 4px 0; }
 .empresas .pitch-profile button { flex-shrink: 0; margin: 0; }
-.empresas .pitch-caption { font-size: 12px; color: #657783; }
+.empresas .pitch-caption { font-size: 12px; color: var(--muted); }
 .empresas .pitch-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin: 24px 0; }
-.empresas .pitch-stats > div { display: flex; flex-direction: column; gap: 8px; padding: 22px 24px; border: 1px solid #dde5eb; border-radius: 12px; background: white; }
-.empresas .pitch-stats strong { font-size: 30px; color: #087469; line-height: 1; }
-.empresas .pitch-stats span { font-size: 13px; color: #526574; }
+.empresas .pitch-stats > div { display: flex; flex-direction: column; gap: 8px; padding: 22px 24px; border: 1px solid var(--line); border-radius: 12px; background: white; }
+.empresas .pitch-stats strong { font-size: 30px; color: var(--brand); line-height: 1; }
+.empresas .pitch-stats span { font-size: 13px; color: var(--muted); }
 .empresas .pitch-section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
 .empresas .pitch-section-heading p { margin: 8px 0 16px; }
 .empresas .pitch-documents { list-style: none; padding: 0; margin: 24px 0 0; }
-.empresas .pitch-documents li { display: flex; align-items: center; gap: 16px; padding: 20px 0; margin: 0; border-top: 1px solid #e7edf1; }
+.empresas .pitch-documents li { display: flex; align-items: center; gap: 16px; padding: 20px 0; margin: 0; border-top: 1px solid var(--line); }
 .empresas .pitch-documents li > div { flex: 1; min-width: 0; }
 .empresas .pitch-documents h3 { font-size: 15px; font-weight: 650; margin: 0 0 6px; }
 .empresas .pitch-documents p { font-size: 12px; margin: 0; }
-.empresas .pitch-file { padding: 12px 9px; border-radius: 8px; background: #f1f5f8; color: #526574; font-size: 11px; font-weight: 700; }
-.empresas .pitch-pending { font-size: 12px; color: #876123; background: #fbf4e5; padding: 5px 9px; border-radius: 5px; }
-.empresas .pitch-review { padding: 18px 20px; background: #f5f9f8; border: 1px solid #deebe6; border-radius: 10px; margin: 24px 0; }
+.empresas .pitch-file { padding: 12px 9px; border-radius: 8px; background: var(--surface-2); color: var(--muted); font-size: 11px; font-weight: 700; }
+.empresas .pitch-pending { font-size: 12px; color: var(--warn); background: var(--warn-soft); padding: 5px 9px; border-radius: 5px; }
+.empresas .pitch-review { padding: 18px 20px; background: var(--brand-soft); border: 1px solid var(--line); border-radius: 10px; margin: 24px 0; }
 .empresas .pitch-review p { margin: 12px 0 0; font-size: 14px; }
 @media (max-width: 600px) { .empresas .fields, .empresas dl { grid-template-columns: 1fr; } .empresas .card { padding: 18px; } .empresas .tabs button { flex: 1 1 40%; } }
 @media (max-width: 600px) { .empresas .pitch-profile { align-items: flex-start; flex-direction: column; } .empresas .pitch-avatar { flex-basis: 50px; height: 50px; font-size: 20px; border-radius: 12px; } .empresas .pitch-identity { gap: 12px; } .empresas .pitch-stats { grid-template-columns: 1fr; gap: 10px; } .empresas .pitch-stats > div { flex-direction: row; align-items: center; gap: 16px; padding: 16px; } .empresas .pitch-documents li { flex-wrap: wrap; } }

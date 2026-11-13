@@ -136,6 +136,22 @@ Padrão atual: `qwen/qwen3.8-27b`, com `reasoning: {"enabled": false}` enviado e
 
 Se `localhost:8000` responder com outra aplicação, configure `BACKEND_PORT=8001` no `.env` da raiz e `API_BASE_URL=http://127.0.0.1:8001` em `frontend/.env.local`. Execute `docker compose up --build -d backend` e reinicie `npm run dev`. A API ficará em `http://localhost:8001/docs`; a porta interna do container continua 8000. Não encerre serviços de outros projetos para liberar a porta.
 
+## Fluxo do agente: inputs e outputs
+
+Documentação completa, com diagrama, contratos JSON e regras: [docs/FLUXO_AGENTE.md](docs/FLUXO_AGENTE.md).
+
+| Etapa | Input | Output |
+|-------|-------|--------|
+| Radar (`/radar`) | Período, UF, município, modalidade | Oportunidades do PNCP e documentos oficiais |
+| Importação (`POST /documents`) | PDF ≤ 20 MB, ≤ 200 páginas | Texto e status por página (`text_extracted`, `ocr_pending`, `failed`) |
+| Agente de extração (`POST /documents/{id}/analysis`) | Lotes de páginas + etapa `conformity` ou `technical` | Requisitos `{title, category, excerpt}` por página, salvos só se a citação existir literalmente na página |
+| Revisão da extração (`PATCH .../requirements/{id}/review`) | Decisão, autor, justificativa, versão | Requisito `confirmed`, `corrected`, `rejected` ou `specialist_review`, com histórico |
+| Empresa (`/api/empresas`, `/companies`) | Perfil, documentos, validade | Contexto de evidências da empresa |
+| Matriz de Elegibilidade (`POST /api/elegibilidade/avaliacoes`) | Requisitos do edital + documentos da empresa | Estado preliminar por requisito (`atendido_preliminarmente`, `nao_atendido`, `nao_verificado`, `revisao_especializada`) com regra e evidências |
+| Relatório (`GET .../relatorio`) | Avaliação | Itens, pendências e avisos; `habilitacao_declarada: false` |
+
+A IA (OpenRouter, `OPENROUTER_MODEL`) atua só na extração. A matriz usa regras determinísticas, e toda conclusão é humana.
+
 ## Empresas e demonstração para o pitch
 
 Abra `/empresas` (perfis usados pela Elegibilidade): perfil fictício completo, sem chave ou backend. Ao salvar, as alterações ficam neste navegador e sobrevivem ao recarregamento. Para levar as edições a outro notebook, abra **Levar configuração para outro notebook**, exporte o JSON e importe-o no destino. O perfil inicial acompanha o código; o armazenamento do navegador não sincroniza automaticamente entre computadores ou endereços.
