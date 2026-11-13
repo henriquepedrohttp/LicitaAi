@@ -10,7 +10,7 @@ const areas: { href: string; label: string; d: string; group?: string; soon?: bo
   { href: "/analise", label: "Análise de editais", d: "M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6" },
   { href: "/elegibilidade", label: "Elegibilidade", d: "M9 12l2 2 4-4M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z" },
   { href: "/empresas", label: "Empresa", d: "M4 21V7l8-4 8 4v14M9 21v-5h6v5M8 10h.01M12 10h.01M16 10h.01", group: "Sua empresa" },
-  { href: "/relatorios", label: "Relatórios", d: "M5 21V10M12 21V4M19 21v-7", soon: true },
+  { href: "/relatorios", label: "Relatórios", d: "M5 21V10M12 21V4M19 21v-7" },
 ];
 
 export default function Nav() {

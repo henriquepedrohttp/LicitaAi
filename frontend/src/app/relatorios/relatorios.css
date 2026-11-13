@@ -1,0 +1,31 @@
+.relatorios { display: grid; gap: 20px; }
+.relatorios .page-head { margin-bottom: 0; }
+.relatorios .notice { margin: 0; }
+.relatorios h2 { overflow-wrap: anywhere; }
+.rel-dados { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px 24px; margin: 0; }
+.rel-dados dt { font-size: 13px; color: var(--muted); }
+.rel-dados dd { margin: 2px 0 0; overflow-wrap: anywhere; }
+.rel-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.rel-nota { font-size: 14px; color: var(--muted); margin: 4px 0 0; }
+.rel-barra { display: flex; height: 14px; gap: 2px; border-radius: 999px; overflow: hidden; margin: 12px 0; }
+.rel-contagens { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 10px 24px; }
+.rel-contagens strong { font-family: var(--font-display); font-size: 22px; vertical-align: middle; }
+.rel-acoes { padding-left: 20px; margin: 0; display: grid; gap: 16px; }
+.rel-acao-topo { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.rel-acao { margin: 6px 0 0; font-weight: 600; }
+.rel-registro { padding: 14px 18px; border-radius: var(--radius); background: var(--success-soft); margin-bottom: 8px; }
+.rel-registro p { margin: 0 0 4px; }
+.rel-form fieldset { border: 0; padding: 0; margin: 0 0 16px; }
+.rel-form legend { font-weight: 650; margin-bottom: 8px; }
+.rel-opcao { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+.rel-erro { display: block; color: var(--danger); font-size: 14px; font-weight: 500; margin: -8px 0 12px; }
+.rel-form fieldset .rel-erro { margin: 4px 0 0; }
+.rel-sem-margem { margin-left: 0; }
+.rel-historico ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; font-size: 14px; }
+@media (max-width: 900px) { .rel-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .rel-stats { grid-template-columns: 1fr; } }
+@media print {
+  .shell { display: block; }
+  .sidebar, .relatorios button, .relatorios form, .rel-historico summary { display: none !important; }
+  .relatorios .card { box-shadow: none; break-inside: avoid; }
+}
