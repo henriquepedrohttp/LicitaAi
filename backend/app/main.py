@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from app.documents import router as documents_router
+from app.requirements import router as requirements_router
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 app = FastAPI(title="LicitaAI API", version="0.1.0")
@@ -40,3 +41,5 @@ def readiness():
 
 
 app.include_router(documents_router)
+
+app.include_router(requirements_router)

@@ -3,14 +3,17 @@ export const dynamic = "force-dynamic";
 type Context = { params: Promise<{ path?: string[] }> };
 async function proxy(request: Request, context: Context) {
   const { path = [] } = await context.params;
-  // Restrict the proxy to document IDs and the original file endpoint.
-  if (path.length > 2 || (path[0] && !/^[0-9a-f-]{36}$/i.test(path[0])) || (path[1] && path[1] !== "file")) {
-    return NextResponse.json({ detail: "Rota inválida." }, { status: 404 });
-  }
+  const uuid = /^[0-9a-f-]{36}$/i;
+  const valid = path.length === 0 || (uuid.test(path[0]) && (
+    path.length === 1 ||
+    (path.length === 2 && ["file", "requirements", "extract-requirements"].includes(path[1])) ||
+    (path.length === 4 && path[1] === "requirements" && uuid.test(path[2]) && path[3] === "review")
+  ));
+  if (!valid) return NextResponse.json({detail:"Rota inválida."},{status:404});
   const limit = 21 * 1024 * 1024;
   try {
     let body: ArrayBuffer | undefined;
-    if (request.method === "POST") {
+    if (["POST", "PATCH"].includes(request.method)) {
       if (Number(request.headers.get("content-length")) > limit) return NextResponse.json({ detail: "O limite é de 20 MB por PDF." }, { status: 413 });
       // Read incrementally to cap the request even without Content-Length.
       const reader = request.body?.getReader();
@@ -43,3 +46,4 @@ async function proxy(request: Request, context: Context) {
 }
 export const GET = proxy;
 export const POST = proxy;
+export const PATCH = proxy;

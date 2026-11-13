@@ -21,3 +21,16 @@ O frontend e a API são base funcional; upload, OCR, PNCP, persistência de dom�
 - Edital original importado pelo proxy do Next.js: 110 páginas com texto nativo extraído, zero páginas com OCR pendente. Isso não comprova cobertura dos requisitos nem qualidade integral da extração.
 - Interface verificada no navegador: seleção do edital, cobertura e troca da página 1 para a 2 atualizam o texto e o link ao PDF original. Visualização gráfica do PDF no iframe não foi confirmada no navegador integrado.
 - OCR, requisitos por IA, vínculo com oportunidade e revisão humana: pendentes.
+
+## Requisitos rastreáveis
+
+- 11 testes aprovados (5 documentais + 6 de requisitos), com PostgreSQL real e chamadas de IA simuladas nos testes.
+- Verificados: fonte inexistente rejeitada, salvamento atômico de candidatos, idempotência por página, páginas com OCR pendente bloqueadas, histórico anterior/novo, conflito de versão e saída truncada do provedor rejeitada.
+- Lint e build aprovados. Formulário de requisitos e campos manuais conferidos no navegador.
+- Chamada real ao OpenRouter/Haiku 4.5: retornou créditos insuficientes. Nenhum resultado de IA salvo. A qualidade real da extração ainda não foi validada.
+
+## Retomada em 13/11/2026
+
+- Lint executado novamente: aprovado.
+- Tentativa de repetir os 11 testes de integração bloqueada neste ambiente: abertura de sockets não permitida e banco indisponível. O resultado anterior acima não foi revalidado nesta sessão.
+- Extração real com IA continua pendente de validação.

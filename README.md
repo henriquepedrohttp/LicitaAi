@@ -73,3 +73,21 @@ PYTHONPATH=backend backend/.venv/bin/python -m unittest discover -s backend/test
 ```
 
 Os testes criam PDFs sintéticos e removem somente seus próprios registros. Não há envio de documentos a um provedor de IA nesta etapa.
+
+## Requisitos rastreáveis
+
+Na área Análise, selecione um documento e uma página, depois use “Extrair requisitos” ou “Adicionar manualmente”. O backend confere se cada trecho está presente naquela página (aceitando apenas diferenças de espaços/quebras de linha). Documento, hash, página e trecho permanecem associados ao requisito. Essa conferência não valida a interpretação.
+
+OpenRouter no `.env` da raiz, somente no backend:
+
+```env
+OPENROUTER_API_KEY=sua_chave
+OPENROUTER_MODEL=anthropic/claude-haiku-4.5
+```
+
+Reinicie o backend após alterar o ambiente; em Docker, recrie o serviço. Cada clique envia somente uma página, com limite de 30 mil caracteres, e registra uma execução bem-sucedida por página. Repetir a chamada preserva revisões sem cobrar nova extração. Uma falha ou citação inválida não salva requisitos nem marca a página como processada. Não há varredura automática integral nem reprocessamento de uma página já concluída nesta versão.
+
+A revisão exige nome e justificativa, mantém valor anterior/novo e usa versão para detectar alterações concorrentes. Nome é autodeclarado no protótipo, sem autenticação. A fonte é imutável nesta versão; erros de origem devem ser rejeitados e registrados em um novo requisito correto. OCR permanece pendente.
+
+Documentação de integração: https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request
+Modelo: https://openrouter.ai/anthropic/claude-haiku-4.5

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import Requirements from "./requirements";
 type Summary = { id:string;filename:string;page_count:number;extracted_pages:number;ocr_pending_pages:number;failed_pages:number;coverage:string };
 type Page = { page:number;text:string;status:string;warning:string|null };
 type Document = Summary & {pages:Page[]};
@@ -12,11 +13,13 @@ export default function AnalysisWorkspace(){
  const [documents,setDocuments]=useState<Summary[]>([]);
  const [document,setDocument]=useState<Document|null>(null);
  const [page,setPage]=useState(1);
+ const [sourceExcerpt,setSourceExcerpt]=useState("");
  const [error,setError]=useState("");
  const [busy,setBusy]=useState(false);
  const [loading,setLoading]=useState(true);
  const input=useRef<HTMLInputElement>(null);
  const selection=useRef(0);
+ const sourcePanel=useRef<HTMLDivElement>(null);
  useEffect(()=>{
   const controller=new AbortController();
   fetch("/api/documents",{signal:controller.signal,cache:"no-store"}).then(readResponse).then(setDocuments)
@@ -27,7 +30,7 @@ export default function AnalysisWorkspace(){
  async function select(id:string){
   const current=++selection.current;
   setBusy(true);setError("");
-  try{const result=await readResponse(await fetch(`/api/documents/${id}`,{cache:"no-store"}));if(current===selection.current){setDocument(result);setPage(1);}}
+  try{const result=await readResponse(await fetch(`/api/documents/${id}`,{cache:"no-store"}));if(current===selection.current){setDocument(result);setPage(1);setSourceExcerpt("");}}
   catch(e){if(current===selection.current)setError(e instanceof Error?e.message:"Falha ao abrir documento.");}
   finally{if(current===selection.current)setBusy(false);}
  }
@@ -38,7 +41,7 @@ export default function AnalysisWorkspace(){
   try{
    const form=new FormData();form.append("file",file);
    const result:Document=await readResponse(await fetch("/api/documents",{method:"POST",body:form}));
-   setDocument(result);setPage(1);
+   setDocument(result);setPage(1);setSourceExcerpt("");
    setDocuments(previous=>[result,...previous.filter(item=>item.id!==result.id)]);
    if(input.current)input.current.value="";
   }catch(e){setError(e instanceof TypeError ? "Falha de conexão durante o envio. Tente novamente." : e instanceof Error?e.message:"Falha ao enviar documento.");}finally{setBusy(false);}
@@ -54,11 +57,12 @@ export default function AnalysisWorkspace(){
   <section className="document-list" aria-label="Documentos importados">
    {documents.map(item=><button className={document?.id===item.id?"document-item selected":"document-item"} key={item.id} onClick={()=>select(item.id)} disabled={busy} aria-pressed={document?.id===item.id}><strong>{item.filename}</strong><span>{item.extracted_pages}/{item.page_count} páginas com texto · {item.ocr_pending_pages} com OCR pendente</span></button>)}
   </section>
-  {!document&&!loading&&<section className="card"><h2>Selecione ou importe um documento</h2><p>O PDF e o texto extraído aparecerão lado a lado. Nenhum requisito foi extraído por IA nesta etapa.</p></section>}
+  {!document&&!loading&&<section className="card"><h2>Selecione ou importe um documento</h2><p>O PDF e o texto extraído aparecerão lado a lado. Depois, extraia os requisitos da página selecionada e confira suas fontes.</p></section>}
   {document&&active&&<>
-   <div className="notice"><strong>{document.extracted_pages} de {document.page_count} páginas com texto extraído.</strong> {document.coverage==="partial"?"Cobertura parcial: há páginas que exigem OCR ou revisão manual.":"A extração de texto não garante leitura correta de tabelas nem identificação de todas as exigências."} OCR e extração de requisitos por IA ainda não foram executados.</div>
-   <div className="page-controls"><label htmlFor="page">Página do arquivo PDF</label><select id="page" value={page} onChange={event=>setPage(Number(event.target.value))}>{document.pages.map(item=><option value={item.page} key={item.page}>{item.page}{item.status!=="text_extracted"?" — revisão necessária":""}</option>)}</select><a href={`/api/documents/${document.id}/file#page=${page}`} target="_blank" rel="noreferrer">Abrir original em outra aba ↗</a></div>
-   <div className="analysis-columns"><section className="card pdf-panel"><h2>Documento original</h2><iframe key={`${document.id}-${page}`} title={`${document.filename}, página ${page}`} src={`/api/documents/${document.id}/file#page=${page}`} /></section><section className="card text-panel"><h2>Texto extraído · página {page}</h2><p className="eyebrow">{active.status==="text_extracted"?"TEXTO NATIVO · NÃO REVISADO":active.status==="ocr_pending"?"OCR PENDENTE":"FALHA DE EXTRAÇÃO"}</p>{active.warning&&<p className="notice">{active.warning}</p>}<pre>{active.text||"Nenhum texto utilizável extraído. Confira o documento original."}</pre></section></div>
+   <div className="notice"><strong>{document.extracted_pages} de {document.page_count} páginas com texto extraído.</strong> {document.coverage==="partial"?"Cobertura parcial: há páginas que exigem OCR ou revisão manual.":"A extração de texto não garante leitura correta de tabelas nem identificação de todas as exigências."} OCR ainda não executado. A cobertura de requisitos é informada abaixo.</div>
+   <div className="page-controls" ref={sourcePanel}><label htmlFor="page">Página do arquivo PDF</label><select id="page" value={page} onChange={event=>{setPage(Number(event.target.value));setSourceExcerpt("");}}>{document.pages.map(item=><option value={item.page} key={item.page}>{item.page}{item.status!=="text_extracted"?" — revisão necessária":""}</option>)}</select><a href={`/api/documents/${document.id}/file#page=${page}`} target="_blank" rel="noreferrer">Abrir original em outra aba ↗</a></div>
+   <div className="analysis-columns"><section className="card pdf-panel"><h2>Documento original</h2><iframe key={`${document.id}-${page}`} title={`${document.filename}, página ${page}`} src={`/api/documents/${document.id}/file#page=${page}`} /></section><section className="card text-panel"><h2>Texto extraído · página {page}</h2><p className="eyebrow">{active.status==="text_extracted"?"TEXTO NATIVO · NÃO REVISADO":active.status==="ocr_pending"?"OCR PENDENTE":"FALHA DE EXTRAÇÃO"}</p>{active.warning&&<p className="notice">{active.warning}</p>}{sourceExcerpt&&<blockquote className="source-excerpt"><strong>Trecho do requisito selecionado</strong><br/>{sourceExcerpt}</blockquote>}<pre>{active.text||"Nenhum texto utilizável extraído. Confira o documento original."}</pre></section></div>
+  <Requirements key={document.id} documentId={document.id} page={page} pageText={active.text} pageStatus={active.status} onSource={(target,excerpt)=>{setPage(target);setSourceExcerpt(excerpt);sourcePanel.current?.scrollIntoView({behavior:"smooth",block:"start"});}}/>
   </>}
  </>;
 }
