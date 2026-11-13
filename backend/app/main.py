@@ -10,6 +10,8 @@ from fastapi.responses import JSONResponse
 
 from app.documents import router as documents_router
 from app.requirements import router as requirements_router
+from app.workflow import router as workflow_router
+from app.companies import router as companies_router
 
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 app = FastAPI(title="LicitaAI API", version="0.1.0")
@@ -43,3 +45,7 @@ def readiness():
 app.include_router(documents_router)
 
 app.include_router(requirements_router)
+
+app.include_router(workflow_router)
+
+app.include_router(companies_router)
