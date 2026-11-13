@@ -13,3 +13,11 @@
 - npm audit completo: alertas moderados transitivos nas ferramentas de lint (minimatch / typescript-eslint), sem correção automática disponível. Não foi forçada atualização incompatível.
 
 O frontend e a API são base funcional; upload, OCR, PNCP, persistência de domínio, elegibilidade e relatórios ainda precisam ser implementados.
+
+## Branch feature/analise
+
+- Lint e build de produção aprovados após implementação.
+- Cinco testes de integração aprovados: persistência/duplicidade/download, conteúdo inválido, PDF corrompido, PDF protegido e documento inexistente.
+- Edital original importado pelo proxy do Next.js: 110 páginas com texto nativo extraído, zero páginas com OCR pendente. Isso não comprova cobertura dos requisitos nem qualidade integral da extração.
+- Interface verificada no navegador: seleção do edital, cobertura e troca da página 1 para a 2 atualizam o texto e o link ao PDF original. Visualização gráfica do PDF no iframe não foi confirmada no navegador integrado.
+- OCR, requisitos por IA, vínculo com oportunidade e revisão humana: pendentes.

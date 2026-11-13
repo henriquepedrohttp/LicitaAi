@@ -57,3 +57,19 @@ Credenciais do exemplo são apenas locais. Não enviar `.env` ao Git. Esta base 
 ## Encerrar
 
 `docker compose down` preserva o banco. Não usar `down -v` se precisar conservar os dados.
+
+## Análise documental — primeira entrega
+
+Abra `/analise`, importe um PDF e selecione a página. O arquivo original e o texto por página são persistidos no PostgreSQL. Uploads idênticos reutilizam o registro por SHA-256. Nesta versão os documentos pertencem a um acervo único de demonstração, ainda sem vínculo com oportunidade ou organização.
+
+Limites: 20 MB e 200 páginas por arquivo; PDFs protegidos são rejeitados. Páginas com menos de 30 caracteres alfanuméricos recebem status OCR pendente (heurística conservadora). OCR, extração de requisitos por IA e revisão humana estruturada ainda não foram implementados. O visualizador embutido depende do suporte a PDF do navegador; há link para abrir o original.
+
+Ao atualizar dependências do backend em Docker, execute `docker compose up --build -d backend`.
+
+Testes de integração (API e PostgreSQL locais em execução):
+
+```bash
+PYTHONPATH=backend backend/.venv/bin/python -m unittest discover -s backend/tests -v
+```
+
+Os testes criam PDFs sintéticos e removem somente seus próprios registros. Não há envio de documentos a um provedor de IA nesta etapa.

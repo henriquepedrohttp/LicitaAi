@@ -8,6 +8,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
+from app.documents import router as documents_router
+
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 app = FastAPI(title="LicitaAI API", version="0.1.0")
 app.add_middleware(
@@ -35,3 +37,6 @@ def readiness():
         logging.getLogger(__name__).warning("Database readiness check failed")
         return JSONResponse(status_code=503, content={"status": "unavailable", "database": "unreachable"})
     return {"status": "ok", "database": "connected"}
+
+
+app.include_router(documents_router)
