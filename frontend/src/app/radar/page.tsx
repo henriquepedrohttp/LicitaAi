@@ -21,14 +21,6 @@ function Facts({ item }: { item: Opportunity }) {
     <div><dt>Publicado em</dt><dd>{dateTime(item.publicado_em)}</dd></div><div><dt>Encerramento das propostas</dt><dd>{dateTime(item.encerramento_em)}</dd></div>
   </dl>;
 }
-function Deadline({ value }: { value: string | null }) {
-  if (!value) return null;
-  const days = Math.ceil((new Date(value).getTime() - new Date().getTime()) / 86_400_000);
-  if (Number.isNaN(days)) return null;
-  if (days < 0) return <span className="chip">Propostas encerradas</span>;
-  const label = days === 0 ? "Encerra hoje" : days === 1 ? "Encerra amanhã" : `Encerra em ${days} dias`;
-  return <span className={days <= 3 ? "chip danger" : days <= 7 ? "chip warn" : "chip ok"}>{label}</span>;
-}
 async function Content({ values, identifier, docsPage }: { values: Record<string, string>; identifier: string; docsPage: string }) {
   const back = href(values);
   let detail: Detail | undefined;
@@ -50,7 +42,7 @@ async function Content({ values, identifier, docsPage }: { values: Record<string
   if (detail) {
       const item = detail.oportunidade;
       return <><Link href={back} prefetch={false}>← Voltar à pesquisa</Link><article className="card radar-detail">
-        <div className="radar-meta"><span className="radar-tags"><span className="radar-badge">{text(item.situacao)}</span><Deadline value={item.encerramento_em} /></span><span>{item.id}</span></div>
+        <div className="radar-meta"><span className="radar-badge">{text(item.situacao)}</span><span>{item.id}</span></div>
         <h2>{text(item.objeto)}</h2><Facts item={item} />
         <dl className="radar-facts"><div><dt>CNPJ do órgão</dt><dd>{item.cnpj}</dd></div><div><dt>Abertura das propostas</dt><dd>{dateTime(item.abertura_em)}</dd></div><div><dt>Critério de julgamento</dt><dd>{text(item.criterio_julgamento)}</dd></div></dl>
         <p>Datas e horários das propostas conforme o PNCP, em horário de Brasília. Confirme retificações na fonte.</p>
@@ -75,9 +67,9 @@ async function Content({ values, identifier, docsPage }: { values: Record<string
       <p className="radar-stamp">Fonte: PNCP · Consulta em {new Date(data.consultado_em).toLocaleString("pt-BR", { timeZone: "America/Recife" })} (Brasília). Cache de até 60 segundos.</p>
       <p className="notice">Os refinamentos e a ordenação são locais à página. O total oficial considera apenas período, modalidade, UF e município.</p>
       {data.oportunidades.length ? <div className="radar-list">{data.oportunidades.map(item => <article key={item.id} className="card">
-        <div className="radar-meta"><span className="radar-tags"><span className="radar-badge">{text(item.situacao)}</span><Deadline value={item.encerramento_em} /></span><span>{item.id}</span></div>
+        <div className="radar-meta"><span className="radar-badge">{text(item.situacao)}</span><span>{item.id}</span></div>
         <h3><Link prefetch={false} href={href(values, { oportunidade: item.id })}>{text(item.objeto)}</Link></h3><Facts item={item} />
-        <div className="radar-actions"><Link prefetch={false} href={href(values, { oportunidade: item.id })}>Ver detalhes e documentos</Link><a href={item.url_oficial} target="_blank" rel="noreferrer">Fonte PNCP ↗</a></div>
+        <div className="radar-actions"><Link prefetch={false} href={href(values, { oportunidade: item.id })}>Ver detalhes →</Link><a href={item.url_oficial} target="_blank" rel="noreferrer">Fonte PNCP ↗</a></div>
       </article>)}</div> : <section className="card"><h3>Nenhuma oportunidade nesta página</h3><p>{data.registros_na_pagina ? "Remova os refinamentos ou consulte outra página oficial." : "Tente outro período, modalidade ou localidade."}</p></section>}
       <nav className="radar-pagination" aria-label="Páginas de oportunidades">
         {data.pagina > 1 && <Link prefetch={false} href={href(values, { pagina: String(data.pagina - 1) })}>← Página anterior</Link>}<span>Página {data.pagina}</span>
@@ -93,7 +85,7 @@ export default async function Radar({ searchParams }: { searchParams: Promise<Pa
   const values = Object.fromEntries(Object.entries(defaults).map(([key, fallback]) => [key, typeof params[key] === "string" ? params[key] : fallback]));
   const identifier = typeof params.oportunidade === "string" ? params.oportunidade : "";
   const docsPage = typeof params.documentos_pagina === "string" ? params.documentos_pagina : "1";
-  return <div className="radar" key={JSON.stringify(params)}><div className="radar-heading"><div><h1>Radar de oportunidades</h1><p>Licitações publicadas no PNCP, filtradas pelo que interessa à sua empresa.</p></div><a className="radar-source" href="https://pncp.gov.br/" target="_blank" rel="noreferrer"><span aria-hidden="true" />Dados oficiais · PNCP ↗</a></div>
+  return <div className="radar" key={JSON.stringify(params)}><div className="radar-heading"><div><div className="eyebrow">DESCOBERTA DE OPORTUNIDADES</div><h1>Radar de Licitações</h1><p>Oportunidades públicas para a próxima decisão da sua empresa.</p></div><a className="radar-source" href="https://pncp.gov.br/" target="_blank" rel="noreferrer"><span aria-hidden="true" />Dados oficiais · PNCP ↗</a></div>
     {!identifier && <SearchForm values={values} />}
     <Suspense fallback={<Loading />}><Content values={values} identifier={identifier} docsPage={docsPage} /></Suspense>
   </div>;
