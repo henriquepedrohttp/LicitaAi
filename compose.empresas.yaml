@@ -1,0 +1,5 @@
+# Use junto de compose.yaml; sem chave, Empresas permanece bloqueado (503).
+services:
+  backend:
+    environment:
+      EMPRESAS_ACCESS_KEY: ${EMPRESAS_ACCESS_KEY:-}

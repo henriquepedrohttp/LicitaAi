@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 from .radar.router import router as radar_router
+from .empresas.router import router as empresas_router
 
 from app.documents import router as documents_router
 from app.requirements import router as requirements_router
@@ -16,6 +17,7 @@ from app.requirements import router as requirements_router
 load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 app = FastAPI(title="LicitaAI API", version="0.1.0")
 app.include_router(radar_router)
+app.include_router(empresas_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")],
