@@ -19,8 +19,9 @@ services:
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER:-licitaai}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB:-licitaai}
       FRONTEND_ORIGIN: http://localhost:3000
+      ANALYSIS_BATCH_PAGES: ${ANALYSIS_BATCH_PAGES:-4}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
-      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-anthropic/claude-haiku-4.5}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-qwen/qwen3.8-27b}
     ports:
       - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
     volumes:

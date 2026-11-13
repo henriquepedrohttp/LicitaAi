@@ -6,7 +6,8 @@ async function proxy(request: Request, context: Context) {
   const uuid = /^[0-9a-f-]{36}$/i;
   const valid = path.length === 0 || (uuid.test(path[0]) && (
     path.length === 1 ||
-    (path.length === 2 && ["file", "requirements", "extract-requirements"].includes(path[1])) ||
+    (path.length === 2 && ["file", "requirements", "extract-requirements", "analysis"].includes(path[1])) ||
+    (path.length === 3 && path[1] === "analysis" && path[2] === "approve") ||
     (path.length === 4 && path[1] === "requirements" && uuid.test(path[2]) && path[3] === "review")
   ));
   if (!valid) return NextResponse.json({detail:"Rota inválida."},{status:404});
