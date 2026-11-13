@@ -1,3 +1,4 @@
+import { readLimited } from '../../proxy';
 const uuid = '[0-9a-fA-F-]{36}';
 const allowed = new RegExp(`^(?:${uuid}(?:/contexto-elegibilidade|/documentos(?:/${uuid}(?:/arquivo)?)?)?)?$`);
 const privateHeaders = { 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' };
@@ -10,22 +11,9 @@ async function proxy(request: Request, context: { params: Promise<{ path?: strin
   try {
     let body: Uint8Array | undefined;
     if (request.method === 'POST' || request.method === 'PUT') {
-      const reader = request.body?.getReader();
-      const chunks: Uint8Array[] = [];
-      let size = 0;
-      while (reader) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        size += value.length;
-        if (size > 10 * 1024 * 1024) {
-          await reader.cancel();
-          return Response.json({ detail: 'Envio excede 10 MiB.' }, { status: 413, headers: privateHeaders });
-        }
-        chunks.push(value);
-      }
-      body = new Uint8Array(size);
-      let offset = 0;
-      for (const chunk of chunks) { body.set(chunk, offset); offset += chunk.length; }
+      const bytes = await readLimited(request, 10 * 1024 * 1024);
+      if (!bytes) return Response.json({ detail: 'Envio excede 10 MiB.' }, { status: 413, headers: privateHeaders });
+      body = bytes;
     }
     const headers = new Headers({ authorization });
     for (const name of ['content-type', 'x-document-title']) {

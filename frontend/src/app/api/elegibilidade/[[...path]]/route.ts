@@ -1,3 +1,4 @@
+import { readLimited } from '../../proxy';
 const uuid = '[0-9a-fA-F-]{36}';
 const allowed = new RegExp(`^avaliacoes(?:/${uuid}(?:/relatorio|/itens/${uuid})?)?$`);
 const privateHeaders = { 'Cache-Control': 'private, no-store', 'X-Content-Type-Options': 'nosniff' };
@@ -11,16 +12,9 @@ async function proxy(request: Request, context: { params: Promise<{ path?: strin
   try {
     let body: string | undefined;
     if (request.method !== 'GET' && request.body) {
-      // Leitura incremental: limita o corpo mesmo sem Content-Length.
-      const reader = request.body.getReader();
-      const chunks: Uint8Array[] = [];
-      let size = 0;
-      for (let part = await reader.read(); !part.done; part = await reader.read()) {
-        size += part.value.byteLength;
-        if (size > MAX_BODY) { await reader.cancel(); return Response.json({ detail: 'Requisição excede o limite.' }, { status: 413, headers: privateHeaders }); }
-        chunks.push(part.value);
-      }
-      body = Buffer.concat(chunks).toString('utf8');
+      const bytes = await readLimited(request, MAX_BODY);
+      if (!bytes) return Response.json({ detail: 'Requisição excede o limite.' }, { status: 413, headers: privateHeaders });
+      body = new TextDecoder().decode(bytes);
     }
     const base = process.env.API_BASE_URL ?? 'http://127.0.0.1:8000';
     const response = await fetch(`${base}/api/elegibilidade/${path}`, {
