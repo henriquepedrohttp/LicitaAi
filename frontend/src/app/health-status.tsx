@@ -14,5 +14,9 @@ export default function HealthStatus(){
   .finally(()=>{if(!controller.signal.aborted)setLoading(false);});
  return ()=>controller.abort();
  },[]);
- return <><div role="status" aria-live="polite"><p>API: {loading ? "verificando…" : status?.api === "ok" ? "conectada" : "indisponível"}<br/>PostgreSQL: {loading ? "verificando…" : status?.database === "connected" ? "conectado" : "conexão não confirmada"}</p></div><button onClick={check} disabled={loading}>Verificar conexão</button></>;
+ const chip=(ok:boolean,yes:string,no:string)=>loading?<span className="chip">Verificando…</span>:<span className={ok?"chip ok":"chip danger"}>{ok?yes:no}</span>;
+ return <><ul className="status-list" role="status" aria-live="polite">
+  <li>Servidor{chip(status?.api==="ok","Conectado","Indisponível")}</li>
+  <li>Banco de dados{chip(status?.database==="connected","Conectado","Não confirmado")}</li>
+ </ul><button className="secondary" style={{marginLeft:0}} onClick={check} disabled={loading}>{loading&&<span className="spinner" aria-hidden="true"/>}Verificar de novo</button></>;
 }
