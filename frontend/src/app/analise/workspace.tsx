@@ -9,7 +9,7 @@ async function readResponse(response:Response) {
  if(!response.ok)throw new Error(typeof result.detail === "string" ? result.detail : "Não foi possível concluir a operação.");
  return result;
 }
-export default function AnalysisWorkspace({fileUrl=(id:string)=>`/api/documents/${id}/file`}:{fileUrl?:(id:string)=>string}={}){
+export default function AnalysisWorkspace({fileUrl=(id:string)=>`/api/documents/${id}/file`,openFirst=false}:{fileUrl?:(id:string)=>string;openFirst?:boolean}={}){
  const [documents,setDocuments]=useState<Summary[]>([]);
  const [document,setDocument]=useState<Document|null>(null);
  const [page,setPage]=useState(1);
@@ -22,11 +22,11 @@ export default function AnalysisWorkspace({fileUrl=(id:string)=>`/api/documents/
  const sourcePanel=useRef<HTMLDivElement>(null);
  useEffect(()=>{
   const controller=new AbortController();
-  fetch("/api/documents",{signal:controller.signal,cache:"no-store"}).then(readResponse).then(setDocuments)
+  fetch("/api/documents",{signal:controller.signal,cache:"no-store"}).then(readResponse).then((list:Summary[])=>{setDocuments(list);if(openFirst&&list[0])void select(list[0].id);})
    .catch(e=>{if(!controller.signal.aborted)setError(e.message);})
    .finally(()=>{if(!controller.signal.aborted)setLoading(false);});
   return ()=>controller.abort();
- },[]);
+ },[openFirst]);
  async function select(id:string){
   const current=++selection.current;
   setBusy(true);setError("");
