@@ -82,12 +82,38 @@ OpenRouter no `.env` da raiz, somente no backend:
 
 ```env
 OPENROUTER_API_KEY=sua_chave
-OPENROUTER_MODEL=anthropic/claude-haiku-4.5
+OPENROUTER_MODEL=qwen/qwen3.8-27b
 ```
 
-Reinicie o backend após alterar o ambiente; em Docker, recrie o serviço. Cada clique envia somente uma página, com limite de 30 mil caracteres, e registra uma execução bem-sucedida por página. Repetir a chamada preserva revisões sem cobrar nova extração. Uma falha ou citação inválida não salva requisitos nem marca a página como processada. Não há varredura automática integral nem reprocessamento de uma página já concluída nesta versão.
+Reinicie o backend após alterar o ambiente; em Docker, recrie o serviço. O endpoint legado de extração por página envia somente uma página, com limite de 30 mil caracteres, e registra uma execução bem-sucedida por página. Repetir a chamada preserva revisões sem cobrar nova extração. Uma falha ou citação inválida não salva requisitos nem marca a página como processada. Não há varredura automática integral nem reprocessamento de uma página já concluída nesta versão.
 
 A revisão exige nome e justificativa, mantém valor anterior/novo e usa versão para detectar alterações concorrentes. Nome é autodeclarado no protótipo, sem autenticação. A fonte é imutável nesta versão; erros de origem devem ser rejeitados e registrados em um novo requisito correto. OCR permanece pendente.
 
 Documentação de integração: https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request
-Modelo: https://openrouter.ai/anthropic/claude-haiku-4.5
+Modelo: https://openrouter.ai/qwen/qwen3.8-27b
+
+### Credencial Groq
+
+A variável é `GROQ_API_KEY=sua_chave`. O endpoint compatível é `https://api.groq.com/openai/v1`. Apenas definir a chave não troca o provedor: a extração atual continua usando OpenRouter. A integração Groq ainda não foi implementada.
+
+## Análise automática em duas etapas
+
+Na área Análise, selecione o arquivo e clique em **Analisar documento inteiro** na etapa **Documentação e conformidade**. Não é necessário escolher páginas para extrair: o sistema percorre todas as páginas com texto utilizável, em lotes de até 4 páginas, e mostra progresso. Páginas sem texto, com erro ou acima de 30 mil caracteres ficam explicitamente bloqueadas; OCR não é executado nesta entrega. Anexos em arquivos separados precisam ser importados e analisados separadamente.
+
+A primeira etapa busca documentos, certidões, declarações, registros e comprovações de habilitação/qualificação do licitante. Revise cada sugestão: confirme, corrija ou rejeite. Pendências e pedidos de revisão especializada bloqueiam a validação. Depois informe responsável e justificativa e use **Validar etapa e liberar análise técnica**. Isso valida a revisão da lista de exigências, não a conformidade ou habilitação de uma empresa.
+
+Somente então é possível iniciar a etapa **Objeto e projeto**, que procura funcionalidades, capacidades, entregáveis e critérios técnicos. As etapas são separadas mesmo quando a categoria é técnica: atestado de capacidade da empresa pertence à conformidade; capacidade do produto pertence ao objeto. Alterar ou adicionar requisitos de conformidade invalida a aprovação e bloqueia a continuação técnica até nova validação. Resultados técnicos anteriores são preservados e precisam ser reconferidos nesse caso.
+
+O processamento roda em segundo plano dentro do backend, com progresso persistido por página/etapa. Pode sair da tela e voltar. Após uma falha ou reinício da API, use continuar/retomar; páginas concluídas não são enviadas novamente ao provedor. A primeira análise de cada etapa faz chamadas por lote de páginas e pode consumir créditos do OpenRouter. Não há estimativa garantida de duração nem fila externa durável nesta versão. Citações inválidas interrompem a etapa sem salvar parcialmente os requisitos do lote. Resultados de extrações antigas ficam em **Extrações anteriores** e não contam para validar a nova etapa.
+
+Endpoints: `GET/POST /documents/{id}/analysis` e `POST /documents/{id}/analysis/approve`. A liberação técnica é conferida no backend; a aprovação registra autor, justificativa, data e versão dos requisitos revisados. Os nomes continuam autodeclarados no protótipo.
+
+### Agrupamento de páginas
+
+`ANALYSIS_BATCH_PAGES=4` define o máximo de páginas por chamada (aceita 1 a 8). Cada lote também respeita um orçamento de 24 mil caracteres; uma página individual de até 30 mil caracteres pode ser enviada sozinha. Por isso, lotes podem conter menos páginas. O modelo precisa retornar uma entrada para cada página recebida, inclusive sem requisitos, e as citações são verificadas na página correspondente. Um lote só é salvo após validação completa. Em caso de erro, páginas de lotes anteriores continuam salvas; o lote pendente é enviado novamente ao retomar e pode gerar nova cobrança. Não há repetição automática de chamadas que falharam.
+
+Para aplicar mudanças no ambiente Docker: `docker compose up -d --force-recreate backend`. As páginas já analisadas pelo fluxo anterior são reaproveitadas. Não há garantia de ganho proporcional ao tamanho do lote: duração e qualidade precisam ser medidas em um edital real.
+
+### Modelo e foco da classificação
+
+Padrão atual: `qwen/qwen3.8-27b`, com `reasoning: {"enabled": false}` enviado em todas as chamadas de extração. Reinicie/recrie o backend após atualizar `.env`. Isso não reprocessa páginas já concluídas. A distinção usa a obrigação, não apenas a seção: atestado de experiência é conformidade da empresa; capacidade da solução é requisito do objeto. Títulos de sumário não são exigências por si mesmos.
