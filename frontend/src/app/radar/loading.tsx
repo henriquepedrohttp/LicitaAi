@@ -1,0 +1,1 @@
+export default function Loading() { return <section className="card" role="status" aria-live="polite" aria-busy="true"><h2>Consultando o PNCP…</h2><p>Aguarde os dados oficiais. A fonte pode levar alguns segundos para responder.</p></section>; }
