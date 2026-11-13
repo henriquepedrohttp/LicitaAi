@@ -91,3 +91,7 @@ A revisão exige nome e justificativa, mantém valor anterior/novo e usa versão
 
 Documentação de integração: https://openrouter.ai/docs/api/api-reference/chat/send-chat-completion-request
 Modelo: https://openrouter.ai/anthropic/claude-haiku-4.5
+
+### Porta do backend ocupada
+
+Se `localhost:8000` responder com outra aplicação, configure `BACKEND_PORT=8001` no `.env` da raiz e `API_BASE_URL=http://127.0.0.1:8001` em `frontend/.env.local`. Execute `docker compose up --build -d backend` e reinicie `npm run dev`. A API ficará em `http://localhost:8001/docs`; a porta interna do container continua 8000. Não encerre serviços de outros projetos para liberar a porta.

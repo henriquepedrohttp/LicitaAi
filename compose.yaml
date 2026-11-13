@@ -22,9 +22,10 @@ services:
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       OPENROUTER_MODEL: ${OPENROUTER_MODEL:-anthropic/claude-haiku-4.5}
     ports:
-      - "127.0.0.1:8000:8000"
+      - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
     volumes:
-      - ./backend/app:/app/app
+      # Permite ao container ler o código em hosts com SELinux (Fedora).
+      - ./backend/app:/app/app:Z
     depends_on:
       db:
         condition: service_healthy
