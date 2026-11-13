@@ -136,6 +136,19 @@ Padrão atual: `qwen/qwen3.8-27b`, com `reasoning: {"enabled": false}` enviado e
 
 Se `localhost:8000` responder com outra aplicação, configure `BACKEND_PORT=8001` no `.env` da raiz e `API_BASE_URL=http://127.0.0.1:8001` em `frontend/.env.local`. Execute `docker compose up --build -d backend` e reinicie `npm run dev`. A API ficará em `http://localhost:8001/docs`; a porta interna do container continua 8000. Não encerre serviços de outros projetos para liberar a porta.
 
+## Demo do pitch (dados fictícios)
+
+Análise, Elegibilidade, Empresas e Relatórios abrem em modo demonstração, sem chave e sem backend, contando a mesma história: o Pregão Eletrônico 028/2026 da Prefeitura de Vale Verde (fictícia) e a empresa Aurora Tecnologia.
+
+| Tela | Demo | Dados reais |
+|------|------|-------------|
+| Análise de editais | `/analise`: PDF fictício de 8 páginas; "Analisar documento inteiro" simula a leitura da IA em lotes | `/analise/documentos` |
+| Elegibilidade | `/elegibilidade`: matriz com os quatro estados e revisão humana | `/elegibilidade/matriz` (chave de Empresas) |
+| Empresas | `/empresas` | `/empresas/cadastro` |
+| Relatórios | `/relatorios`: resumo, ações antes da sessão, decisão de participar e impressão | ainda não implementado |
+
+Fonte única do edital: `frontend/src/app/demo/edital.json`. Após alterá-lo, gere o PDF de novo com `python3 frontend/scripts/gerar-edital-demo.py`. Na demo nada é enviado ao servidor, e recarregar a página restaura o cenário.
+
 ## Fluxo do agente: inputs e outputs
 
 Documentação completa, com diagrama, contratos JSON e regras: [docs/FLUXO_AGENTE.md](docs/FLUXO_AGENTE.md).

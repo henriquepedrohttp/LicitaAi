@@ -1,0 +1,94 @@
+{
+  "aviso": "Edital fictício para demonstração do LicitaAI. Órgão, números e valores são ilustrativos.",
+  "id": "00000000-0000-4000-8000-000000000028",
+  "arquivo": "Edital PE 028-2026 - Plataforma de Servicos Digitais.pdf",
+  "pdf": "/demo/edital-pe-028-2026.pdf",
+  "sha256": "a3f9c2e17b4d08e6f1a2c3d4e5f60718293a4b5c6d7e8f9012a3b4c5d6e7f809",
+  "orgao": "Prefeitura Municipal de Vale Verde (fictícia)",
+  "pregao": "Pregão Eletrônico nº 028/2026",
+  "pncp": "10166817000198-1-000044/2026",
+  "objeto": "Contratação de plataforma de serviços digitais ao cidadão, com implantação, migração de dados, treinamento e suporte por 12 meses.",
+  "valor_estimado": "R$ 1.280.000,00",
+  "sessao": "2026-11-24T09:00:00-03:00",
+  "paginas": [
+    [
+      "PREFEITURA MUNICIPAL DE VALE VERDE - PE (ÓRGÃO FICTÍCIO PARA DEMONSTRAÇÃO)",
+      "SECRETARIA MUNICIPAL DE ADMINISTRAÇÃO E INOVAÇÃO",
+      "EDITAL DE PREGÃO ELETRÔNICO Nº 028/2026",
+      "Processo Administrativo nº 1.245/2026. Critério de julgamento: menor preço global. Modo de disputa: aberto.",
+      "Objeto: contratação de plataforma de serviços digitais ao cidadão, com implantação, migração de dados, treinamento e suporte técnico pelo período de 12 (doze) meses.",
+      "Valor estimado da contratação: R$ 1.280.000,00 (um milhão, duzentos e oitenta mil reais).",
+      "Data da sessão pública: 24/11/2026, às 09h00 (horário de Brasília), no Portal Nacional de Contratações Públicas."
+    ],
+    [
+      "1. DO OBJETO",
+      "1.1. O objeto desta licitação é a contratação de empresa especializada para fornecimento de plataforma de serviços digitais ao cidadão, conforme especificações do Termo de Referência (Anexo I).",
+      "2. DAS CONDIÇÕES DE PARTICIPAÇÃO",
+      "2.1. Poderão participar deste Pregão os interessados cujo ramo de atividade seja compatível com o objeto e que estejam cadastrados no sistema eletrônico utilizado.",
+      "2.2. Não poderão participar empresas declaradas inidôneas ou suspensas de licitar com a Administração Pública.",
+      "2.3. Será assegurado tratamento diferenciado às microempresas e empresas de pequeno porte, nos termos da Lei Complementar nº 123/2006."
+    ],
+    [
+      "8. DA HABILITAÇÃO",
+      "8.1. Para fins de habilitação, o licitante deverá apresentar a documentação relacionada nos subitens seguintes.",
+      "8.2. HABILITAÇÃO JURÍDICA",
+      "8.2.1. Ato constitutivo, estatuto ou contrato social em vigor, devidamente registrado, acompanhado de todas as alterações ou da consolidação respectiva.",
+      "8.2.5. Declaração de que não emprega menor de dezoito anos em trabalho noturno, perigoso ou insalubre e não emprega menor de dezesseis anos, salvo na condição de aprendiz."
+    ],
+    [
+      "8.3. REGULARIDADE FISCAL, SOCIAL E TRABALHISTA",
+      "8.3.1. Prova de inscrição no Cadastro Nacional de Pessoas Jurídicas (CNPJ).",
+      "8.3.2. Prova de regularidade fiscal perante a Fazenda Nacional, mediante certidão conjunta emitida pela Receita Federal do Brasil e pela Procuradoria-Geral da Fazenda Nacional.",
+      "8.3.4. Prova de regularidade relativa ao Fundo de Garantia por Tempo de Serviço (FGTS), demonstrando situação regular no cumprimento dos encargos sociais.",
+      "8.3.5. Prova de inexistência de débitos inadimplidos perante a Justiça do Trabalho, mediante a apresentação de Certidão Negativa de Débitos Trabalhistas (CNDT)."
+    ],
+    [
+      "8.4. QUALIFICAÇÃO ECONÔMICO-FINANCEIRA",
+      "8.4.1. Balanço patrimonial e demonstrações contábeis do último exercício social, já exigíveis e apresentados na forma da lei.",
+      "8.4.2. A comprovação da boa situação financeira será feita por meio dos índices de Liquidez Geral (LG), Solvência Geral (SG) e Liquidez Corrente (LC), que deverão ser superiores a 1 (um).",
+      "8.4.3. Certidão negativa de falência expedida pelo distribuidor da sede do licitante."
+    ],
+    [
+      "8.5. QUALIFICAÇÃO TÉCNICA",
+      "8.5.1. Atestado(s) de capacidade técnica, fornecido(s) por pessoa jurídica de direito público ou privado, que comprove(m) a execução de serviços compatíveis em características com o objeto desta licitação.",
+      "8.5.2. Para fins de comprovação de capacidade técnica, o(s) atestado(s) deverá(ão) demonstrar a operação de plataforma com, no mínimo, 5.000 usuários ativos."
+    ],
+    [
+      "ANEXO I - TERMO DE REFERÊNCIA",
+      "3. REQUISITOS DA SOLUÇÃO",
+      "3.1. A plataforma deverá ser acessível por navegador e dispositivos móveis, atendendo ao nível AA das diretrizes WCAG 2.1.",
+      "3.2. A plataforma deverá permitir autenticação dos cidadãos por meio da conta gov.br.",
+      "3.3. A solução deverá garantir disponibilidade mínima de 99,5% ao mês, apurada mensalmente pela contratada.",
+      "3.4. A solução deverá disponibilizar API REST documentada para integração com os sistemas legados do município.",
+      "3.5. A contratada deverá realizar a migração dos dados do sistema atual, sem perda de registros, em até 60 dias da emissão da ordem de serviço.",
+      "3.6. A contratada deverá ministrar treinamento de 40 horas para até 30 servidores municipais."
+    ],
+    [
+      "4. SUPORTE TÉCNICO",
+      "4.1. O suporte técnico deverá funcionar em regime 8x5, com tempo máximo de resposta de 4 horas para chamados críticos.",
+      "15. DA GARANTIA DE EXECUÇÃO",
+      "15.1. O adjudicatário deverá prestar garantia de execução do contrato no percentual de 5% (cinco por cento) do valor contratual, no prazo de 10 dias úteis após a assinatura.",
+      "16. DAS SANÇÕES",
+      "16.1. O descumprimento das obrigações sujeitará a contratada às sanções previstas na Lei nº 14.133/2021."
+    ]
+  ],
+  "requisitos": [
+    { "etapa": "conformity", "pagina": 3, "categoria": "legal", "titulo": "Apresentar ato constitutivo (contrato social) em vigor", "trecho": "8.2.1. Ato constitutivo, estatuto ou contrato social em vigor, devidamente registrado, acompanhado de todas as alterações ou da consolidação respectiva." },
+    { "etapa": "conformity", "pagina": 3, "categoria": "legal", "titulo": "Declaração de que não emprega menor de 18 anos em trabalho noturno, perigoso ou insalubre", "trecho": "8.2.5. Declaração de que não emprega menor de dezoito anos em trabalho noturno, perigoso ou insalubre e não emprega menor de dezesseis anos, salvo na condição de aprendiz." },
+    { "etapa": "conformity", "pagina": 4, "categoria": "fiscal", "titulo": "Prova de regularidade fiscal perante a Fazenda Nacional (CND conjunta RFB/PGFN)", "trecho": "8.3.2. Prova de regularidade fiscal perante a Fazenda Nacional, mediante certidão conjunta emitida pela Receita Federal do Brasil e pela Procuradoria-Geral da Fazenda Nacional." },
+    { "etapa": "conformity", "pagina": 4, "categoria": "fiscal", "titulo": "Prova de regularidade relativa ao FGTS (CRF)", "trecho": "8.3.4. Prova de regularidade relativa ao Fundo de Garantia por Tempo de Serviço (FGTS), demonstrando situação regular no cumprimento dos encargos sociais." },
+    { "etapa": "conformity", "pagina": 4, "categoria": "fiscal", "titulo": "Prova de inexistência de débitos trabalhistas (CNDT)", "trecho": "8.3.5. Prova de inexistência de débitos inadimplidos perante a Justiça do Trabalho, mediante a apresentação de Certidão Negativa de Débitos Trabalhistas (CNDT)." },
+    { "etapa": "conformity", "pagina": 5, "categoria": "financial", "titulo": "Balanço patrimonial e demonstrações contábeis do último exercício social", "trecho": "8.4.1. Balanço patrimonial e demonstrações contábeis do último exercício social, já exigíveis e apresentados na forma da lei." },
+    { "etapa": "conformity", "pagina": 5, "categoria": "financial", "titulo": "Índices de Liquidez Geral, Solvência Geral e Liquidez Corrente superiores a 1", "trecho": "8.4.2. A comprovação da boa situação financeira será feita por meio dos índices de Liquidez Geral (LG), Solvência Geral (SG) e Liquidez Corrente (LC), que deverão ser superiores a 1 (um)." },
+    { "etapa": "conformity", "pagina": 6, "categoria": "technical", "titulo": "Atestado de capacidade técnica em plataforma digital compatível com o objeto", "trecho": "8.5.1. Atestado(s) de capacidade técnica, fornecido(s) por pessoa jurídica de direito público ou privado, que comprove(m) a execução de serviços compatíveis em características com o objeto desta licitação." },
+    { "etapa": "conformity", "pagina": 6, "categoria": "technical", "titulo": "Atestado comprovando plataforma com no mínimo 5.000 usuários ativos", "trecho": "8.5.2. Para fins de comprovação de capacidade técnica, o(s) atestado(s) deverá(ão) demonstrar a operação de plataforma com, no mínimo, 5.000 usuários ativos." },
+    { "etapa": "conformity", "pagina": 8, "categoria": "contractual", "titulo": "Prestar garantia de execução de 5% do valor do contrato", "trecho": "15.1. O adjudicatário deverá prestar garantia de execução do contrato no percentual de 5% (cinco por cento) do valor contratual, no prazo de 10 dias úteis após a assinatura." },
+    { "etapa": "technical", "pagina": 7, "categoria": "technical", "titulo": "Plataforma acessível em navegador e celular, nível AA da WCAG 2.1", "trecho": "3.1. A plataforma deverá ser acessível por navegador e dispositivos móveis, atendendo ao nível AA das diretrizes WCAG 2.1." },
+    { "etapa": "technical", "pagina": 7, "categoria": "technical", "titulo": "Login dos cidadãos pela conta gov.br", "trecho": "3.2. A plataforma deverá permitir autenticação dos cidadãos por meio da conta gov.br." },
+    { "etapa": "technical", "pagina": 7, "categoria": "technical", "titulo": "Disponibilidade mínima de 99,5% ao mês", "trecho": "3.3. A solução deverá garantir disponibilidade mínima de 99,5% ao mês, apurada mensalmente pela contratada." },
+    { "etapa": "technical", "pagina": 7, "categoria": "technical", "titulo": "API REST documentada para integração com sistemas legados", "trecho": "3.4. A solução deverá disponibilizar API REST documentada para integração com os sistemas legados do município." },
+    { "etapa": "technical", "pagina": 7, "categoria": "technical", "titulo": "Migrar os dados do sistema atual sem perda em até 60 dias", "trecho": "3.5. A contratada deverá realizar a migração dos dados do sistema atual, sem perda de registros, em até 60 dias da emissão da ordem de serviço." },
+    { "etapa": "technical", "pagina": 7, "categoria": "technical", "titulo": "Treinamento de 40 horas para até 30 servidores", "trecho": "3.6. A contratada deverá ministrar treinamento de 40 horas para até 30 servidores municipais." },
+    { "etapa": "technical", "pagina": 8, "categoria": "contractual", "titulo": "Suporte 8x5 com resposta em até 4 horas para chamados críticos", "trecho": "4.1. O suporte técnico deverá funcionar em regime 8x5, com tempo máximo de resposta de 4 horas para chamados críticos." }
+  ]
+}

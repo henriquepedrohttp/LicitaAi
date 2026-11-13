@@ -14,7 +14,7 @@ require.extensions['.css'] = () => {};
 
 const { filtrar, resumo, filtrosVazios } = require('../src/app/elegibilidade/contracts.ts');
 const { api, Cabecalho, Resumo, FiltrosForm, Matriz, Detalhe } = require('../src/app/elegibilidade/workspace.tsx');
-const Page = require('../src/app/elegibilidade/page.tsx').default;
+const Page = require('../src/app/elegibilidade/matriz/page.tsx').default;
 const proxy = require('../src/app/api/elegibilidade/[[...path]]/route.ts');
 const originalFetch = global.fetch;
 afterEach(() => { global.fetch = originalFetch; });
@@ -112,4 +112,44 @@ test('BFF aceita só rotas da matriz, exige credencial, limita corpo e trata ind
   assert.equal((await proxy.POST(new Request('http://x', { method: 'POST', headers: auth, body: 'x'.repeat(70000) }), ctx(['avaliacoes']))).status, 413);
   global.fetch = async () => { throw new Error('down'); };
   assert.equal((await proxy.GET(new Request('http://x', { headers: auth }), ctx(['avaliacoes', UUID + 1, 'relatorio']))).status, 503);
+});
+
+test('demo do pitch: cenário cobre os quatro estados e revisão local registra histórico', () => {
+  const { demoAvaliacao, demoEvidencias, revisarDemo } = require('../src/app/elegibilidade/demo/example.ts');
+  const r = resumo(demoAvaliacao.itens);
+  for (const estado of ['atendido_preliminarmente', 'nao_atendido', 'nao_verificado', 'revisao_especializada']) assert.ok(r[estado] > 0, estado);
+  const ids = new Set(demoEvidencias.map(e => e.id));
+  for (const item of demoAvaliacao.itens) for (const e of item.evidencias) assert.ok(ids.has(e.documento_id));
+  const item = demoAvaliacao.itens.find(i => i.estado === 'nao_verificado');
+  const corrigido = revisarDemo(item, 'corrigir', 'Ana', 'Declaração gerada no portal.', { estado: 'atendido_preliminarmente' });
+  assert.equal(corrigido.estado, 'atendido_preliminarmente');
+  assert.equal(corrigido.origem_estado, 'humano');
+  assert.equal(corrigido.versao, item.versao + 1);
+  assert.deepEqual(corrigido.historico.at(-1).antes, { estado: 'nao_verificado' });
+  assert.equal(item.estado, 'nao_verificado'); // não muta o cenário original
+  const comEvidencia = revisarDemo(item, 'evidencias', 'Ana', 'Vinculado.', { evidencias: ['demo-doc-contrato'] });
+  assert.equal(comEvidencia.evidencias[0].origem, 'associada_por_analista');
+});
+
+test('demo da Análise: progresso por lotes no tempo, citação conferida e revisão versionada', async () => {
+  require.extensions['.json'] = (m, f) => { m.exports = JSON.parse(fs.readFileSync(f, 'utf8')); };
+  const { createDemoApi, BATCH_MS } = require('../src/app/analise/demo/mock-api.ts');
+  const edital = require('../src/app/demo/edital.json');
+  let t = 0; const api = createDemoApi(() => t);
+  const get = async p => (await api(p, 'GET', null)).json();
+  const base = `/api/documents/${edital.id}`;
+  assert.equal((await get(`${base}/requirements`)).requirements.length, 0);
+  assert.equal((await api(`${base}/analysis`, 'POST', { stage: 'conformity' })).status, 202);
+  t = BATCH_MS; let wf = await get(`${base}/analysis`);
+  assert.equal(wf.stages.conformity.processed_pages, 4); assert.equal(wf.stages.conformity.job.status, 'running');
+  t = 2 * BATCH_MS; wf = await get(`${base}/analysis`);
+  assert.equal(wf.stages.conformity.job.status, 'completed');
+  const reqs = (await get(`${base}/requirements`)).requirements;
+  assert.equal(reqs.length, edital.requisitos.filter(r => r.etapa === 'conformity').length);
+  const bad = await api(`${base}/requirements`, 'POST', { page: 3, title: 'Inventado pela IA', category: 'legal', excerpt: 'texto que não existe no edital', author: 'Ana', stage: 'conformity' });
+  assert.equal(bad.status, 422);
+  const r = reqs[0];
+  const ok = await (await api(`${base}/requirements/${r.id}/review`, 'PATCH', { status: 'confirmed', author: 'Ana', reason: 'Conferido.', title: r.title, category: r.category, expected_version: 1 })).json();
+  assert.equal(ok.version, 2);
+  assert.equal((await api(`${base}/requirements/${r.id}/review`, 'PATCH', { status: 'confirmed', author: 'Ana', reason: 'De novo.', title: r.title, category: r.category, expected_version: 1 })).status, 409);
 });

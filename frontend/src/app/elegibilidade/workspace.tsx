@@ -72,8 +72,8 @@ export function Matriz({ itens, selecionado, onSelect }: { itens: Item[]; seleci
 }
 
 type Acao = 'confirmar' | 'corrigir' | 'revisao_especializada' | 'observacao' | 'evidencias' | 'criticidade';
-export function Detalhe({ item, documentos, busy, autor, onAutor, onSave, onClose, onMove, posicao }: {
-  item: Item; documentos: Evidence[]; busy: boolean; autor: string; onAutor: (v: string) => void; posicao: string;
+export function Detalhe({ item, documentos, busy, autor, onAutor, onSave, onClose, onMove, posicao, urlFonte }: {
+  item: Item; documentos: Evidence[]; busy: boolean; autor: string; onAutor: (v: string) => void; posicao: string; urlFonte?: string;
   onSave: (acao: Acao, extra: Record<string, unknown>, justificativa: string) => void; onClose: () => void; onMove: (passo: number) => void;
 }) {
   const [justificativa, setJustificativa] = useState('');
@@ -92,7 +92,7 @@ export function Detalhe({ item, documentos, busy, autor, onAutor, onSave, onClos
     {item.reconferir && <p className="notice" role="note">Reconferir: {item.reconferir}</p>}
     <h3>Texto original</h3><blockquote className="source-excerpt">{fonte.excerpt}</blockquote>
     <p>{fonte.filename} · página {fonte.page ?? 'Não informada'} · cláusula não informada pela Análise · {fonte.verified ? 'trecho localizado na fonte' : 'fonte não confirmada'}
-      {fonte.page && <> · <a href={`/api/documents/${fonte.document_id}/file#page=${fonte.page}`} target="_blank" rel="noreferrer">Abrir página no edital ↗</a></>}</p>
+      {fonte.page && <> · <a href={`${urlFonte ?? `/api/documents/${fonte.document_id}/file`}#page=${fonte.page}`} target="_blank" rel="noreferrer">Abrir página no edital ↗</a></>}</p>
     <h3>Interpretação estruturada</h3>
     <ul><li>Categoria: {categorias[item.categoria]} (original da Análise: {item.categoria_original})</li>
       <li>Revisão na Análise: {item.requisito.review_status} · versão {item.requisito.version}</li>
