@@ -37,10 +37,10 @@ class WorkflowTests(unittest.TestCase):
         return approve(self.document_id, Approval(author='Analista', reason='Conferido no edital original', expected_snapshot=current['snapshot']))
 
     @patch('app.workflow.extract_pages_with_openrouter')
-    def test_whole_document_gate_and_separate_stages(self, extract):
-        with self.assertRaises(HTTPException) as error:
-            start_analysis(self.document_id, Start(stage='technical'), BackgroundTasks())
-        self.assertEqual(error.exception.status_code, 409)
+    def test_independent_stages_and_separate_results(self, extract):
+        tasks = BackgroundTasks()
+        self.assertEqual(start_analysis(self.document_id, Start(stage='technical'), tasks)['status'], 'requested')
+        self.assertEqual(len(tasks.tasks), 1)
         extract.assert_not_called()
         extract.side_effect = lambda pages, **kwargs: ({page['page']: [self.candidate] for page in pages}, 'test/mock')
         run_stage(self.document_id, 'conformity')
@@ -61,8 +61,7 @@ class WorkflowTests(unittest.TestCase):
         self.assertEqual(extract.call_count, before)
         add_requirement(self.document_id, ManualRequirement(title='Conferir comprovação fiscal adicional',category='fiscal', excerpt=self.candidate.excerpt,page=1,author='Analista',stage='conformity'))
         self.assertFalse(get_analysis(self.document_id)['conformity_approved'])
-        with self.assertRaises(HTTPException):
-            start_analysis(self.document_id, Start(stage='technical'), BackgroundTasks())
+        self.assertEqual(start_analysis(self.document_id, Start(stage='technical'), BackgroundTasks())['status'], 'requested')
 
     @patch('app.workflow.extract_pages_with_openrouter')
     def test_partial_coverage_cannot_be_approved(self, extract):
@@ -110,10 +109,9 @@ class WorkflowTests(unittest.TestCase):
             run_stage(self.document_id, 'conformity')
         extract.assert_not_called()
 
-    def test_manual_technical_requirement_cannot_bypass_gate(self):
-        with self.assertRaises(HTTPException) as error:
-            add_requirement(self.document_id, ManualRequirement(title='Armazenar 20 TB no projeto', category='technical', excerpt='O projeto deverá armazenar 20 TB.', page=1, author='Analista', stage='technical'))
-        self.assertEqual(error.exception.status_code, 409)
+    def test_manual_technical_requirement_does_not_require_conformity_approval(self):
+        item = add_requirement(self.document_id, ManualRequirement(title='Armazenar 20 TB no projeto', category='technical', excerpt='O projeto deverá armazenar 20 TB.', page=1, author='Analista', stage='technical'))
+        self.assertEqual(item['stage'], 'technical')
 
     @patch('app.workflow.extract_pages_with_openrouter')
     def test_outdated_approval_is_rejected(self, extract):
@@ -190,6 +188,15 @@ class WorkflowTests(unittest.TestCase):
         self.assertIn('CADA página', payload['messages'][0]['content'])
         self.assertEqual(payload['reasoning'], {'enabled': False})
         self.assertIn('classifique pelo que a obrigação exige', payload['messages'][0]['content'])
+
+    @patch('app.workflow.extract_pages_with_openrouter')
+    def test_technical_worker_runs_before_conformity(self, extract):
+        extract.side_effect = lambda pages, **kwargs: ({page['page']: [] for page in pages}, 'test/mock')
+        run_stage(self.document_id, 'technical')
+        state = get_analysis(self.document_id)
+        self.assertEqual(state['stages']['technical']['processed_pages'], 2)
+        self.assertEqual(state['stages']['conformity']['processed_pages'], 0)
+        self.assertFalse(state['conformity_approved'])
 
     @patch.dict('os.environ', {'ANALYSIS_BATCH_PAGES': '4'})
     def test_batch_size_and_text_budget(self):

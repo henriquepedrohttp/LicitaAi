@@ -142,11 +142,6 @@ def add_requirement(document_id: UUID, request: ManualRequirement):
         initialize(connection)
         document = document_row(connection, document_id)
         connection.execute("SELECT id FROM analysis_documents WHERE id=%s FOR UPDATE", (document_id,))
-        if request.stage == "technical":
-            from app.workflow import setup, state
-            setup(connection)
-            if not state(connection, document_id)["conformity_approved"]:
-                raise HTTPException(409, "Valide primeiro a etapa de documentação e conformidade.")
         row = insert_requirement(connection, document, request.page, request, "manual", author=request.author, stage=request.stage)
         if not row:
             raise HTTPException(409, "Este requisito já está registrado.")

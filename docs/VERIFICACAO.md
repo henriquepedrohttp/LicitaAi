@@ -34,3 +34,11 @@ O frontend e a API são base funcional; upload, OCR, PNCP, persistência de dom�
 - Lint executado novamente: aprovado.
 - Tentativa de repetir os 11 testes de integração bloqueada neste ambiente: abertura de sockets não permitida e banco indisponível. O resultado anterior acima não foi revalidado nesta sessão.
 - Extração real com IA continua pendente de validação.
+
+## Análises independentes e comparação empresarial
+
+- Removido pré-requisito de aprovação de conformidade para análise técnica; cenários de início/execução antes da conformidade aprovados.
+- Cadastro de empresas e documentos PDF/texto, perfil fictício e matriz preliminar implementados.
+- 37 testes aprovados com PostgreSQL e IA simulada; lint e build aprovados.
+- Comparação automática limitada a tipos documentais e validade cadastrados, sem leitura semântica do conteúdo. Correspondência é candidata; ausência é não verificado e vencimento gera alerta preliminar.
+- Verificação visual e avaliação com documentos empresariais reais ainda pendentes. Detalhes em `docs/agents/2026-11-13-empresas-comparacao-independente.md`.

@@ -1,4 +1,4 @@
-"""Resumable whole-document analysis, with a human gate between stages."""
+"""Resumable whole-document analysis, with independent stages."""
 import hashlib
 import json
 import logging
@@ -94,9 +94,10 @@ def approve(document_id: UUID, request: Approval):
 def start_analysis(document_id: UUID, request: Start, tasks: BackgroundTasks):
     with connect() as connection:
         setup(connection)
-        current = state(connection, document_id)
-        if request.stage == 'technical' and not current['conformity_approved']:
-            raise HTTPException(409, 'Valide primeiro a etapa de documentação e conformidade.')
+        document_row(connection, document_id)
+        lock_id = int.from_bytes(hashlib.sha256(str(document_id).encode()).digest()[:8], 'big', signed=True)
+        if not connection.execute('SELECT pg_try_advisory_xact_lock(%s) AS locked', (lock_id,)).fetchone()['locked']:
+            raise HTTPException(409, 'Já há uma análise em andamento neste documento. Aguarde antes de iniciar outra etapa.')
         if not os.getenv('OPENROUTER_API_KEY'):
             raise HTTPException(503, 'Configure OPENROUTER_API_KEY no backend.')
     # A session advisory lock in the worker prevents parallel or duplicate charges.
@@ -160,8 +161,6 @@ def run_stage(document_id, stage):
             for batch in page_batches(document['pages'], completed):
                 number, page_end = batch[0]['page'], batch[-1]['page']
                 with connect() as connection:
-                    if stage == 'technical' and not state(connection, document_id)['conformity_approved']:
-                        raise HTTPException(409, 'Validação de conformidade ausente ou alterada. Valide novamente antes de continuar.')
                     update_job(connection, document_id, stage, 'running', number, page_end=page_end)
                 by_page, model = extract_pages_with_openrouter(batch, stage=stage)
                 if set(by_page) != {page['page'] for page in batch}:
@@ -172,8 +171,6 @@ def run_stage(document_id, stage):
                         verified_excerpt(page['text'], candidate.excerpt)
                 with connect() as connection:
                     connection.execute('SELECT id FROM analysis_documents WHERE id=%s FOR UPDATE', (document_id,))
-                    if stage == 'technical' and not state(connection, document_id)['conformity_approved']:
-                        raise HTTPException(409, 'A conformidade mudou durante a extração. Valide novamente.')
                     for page in batch:
                         count = 0
                         for candidate in by_page[page['page']]:

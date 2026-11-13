@@ -96,17 +96,31 @@ Modelo: https://openrouter.ai/qwen/qwen3.8-27b
 
 A variável é `GROQ_API_KEY=sua_chave`. O endpoint compatível é `https://api.groq.com/openai/v1`. Apenas definir a chave não troca o provedor: a extração atual continua usando OpenRouter. A integração Groq ainda não foi implementada.
 
-## Análise automática em duas etapas
+## Análises independentes do edital
 
-Na área Análise, selecione o arquivo e clique em **Analisar documento inteiro** na etapa **Documentação e conformidade**. Não é necessário escolher páginas para extrair: o sistema percorre todas as páginas com texto utilizável, em lotes de até 4 páginas, e mostra progresso. Páginas sem texto, com erro ou acima de 30 mil caracteres ficam explicitamente bloqueadas; OCR não é executado nesta entrega. Anexos em arquivos separados precisam ser importados e analisados separadamente.
+Na área Análise, escolha **Documentação e conformidade** ou **Objeto e projeto** e clique em **Analisar documento inteiro**. As análises podem ser iniciadas em qualquer ordem, sem revisar documentos empresariais ou validar uma etapa antes da outra. Apenas uma execução por documento é permitida por vez; a interface informa quando outra análise está em andamento.
 
-A primeira etapa busca documentos, certidões, declarações, registros e comprovações de habilitação/qualificação do licitante. Revise cada sugestão: confirme, corrija ou rejeite. Pendências e pedidos de revisão especializada bloqueiam a validação. Depois informe responsável e justificativa e use **Validar etapa e liberar análise técnica**. Isso valida a revisão da lista de exigências, não a conformidade ou habilitação de uma empresa.
+A conformidade extrai documentos, certidões, declarações, registros e comprovações exigidas do licitante. O objeto/projeto extrai funcionalidades, capacidades, entregáveis e critérios técnicos. Atestado de experiência da empresa pertence à conformidade; capacidade do produto pertence ao objeto. A seleção da página serve para consultar fontes ou incluir exigências manualmente, sem limitar a análise automática.
 
-Somente então é possível iniciar a etapa **Objeto e projeto**, que procura funcionalidades, capacidades, entregáveis e critérios técnicos. As etapas são separadas mesmo quando a categoria é técnica: atestado de capacidade da empresa pertence à conformidade; capacidade do produto pertence ao objeto. Alterar ou adicionar requisitos de conformidade invalida a aprovação e bloqueia a continuação técnica até nova validação. Resultados técnicos anteriores são preservados e precisam ser reconferidos nesse caso.
+O processamento percorre páginas utilizáveis em lotes, persiste progresso e permite retomada sem reenviar páginas concluídas. Páginas sem texto, com erro ou acima de 30 mil caracteres ficam pendentes; OCR não é executado nesta entrega. Anexos em arquivos separados precisam de análise própria. O worker roda no processo da API, sem fila externa; após falha/reinício use continuar/retomar. A primeira execução de cada análise consome chamadas ao OpenRouter. Citações inválidas impedem salvamento parcial do lote.
 
-O processamento roda em segundo plano dentro do backend, com progresso persistido por página/etapa. Pode sair da tela e voltar. Após uma falha ou reinício da API, use continuar/retomar; páginas concluídas não são enviadas novamente ao provedor. A primeira análise de cada etapa faz chamadas por lote de páginas e pode consumir créditos do OpenRouter. Não há estimativa garantida de duração nem fila externa durável nesta versão. Citações inválidas interrompem a etapa sem salvar parcialmente os requisitos do lote. Resultados de extrações antigas ficam em **Extrações anteriores** e não contam para validar a nova etapa.
+A revisão da extração ficou em **Revisar interpretação da extração** no detalhe do requisito. É diferente de avaliar a empresa. O endpoint de aprovação documental antigo permanece para compatibilidade e histórico, mas não bloqueia mais a análise técnica.
 
-Endpoints: `GET/POST /documents/{id}/analysis` e `POST /documents/{id}/analysis/approve`. A liberação técnica é conferida no backend; a aprovação registra autor, justificativa, data e versão dos requisitos revisados. Os nomes continuam autodeclarados no protótipo.
+## Empresas, documentos e comparação preliminar
+
+Abra **Empresas** (`/empresas`) e cadastre uma empresa ou use **Usar empresa fictícia de demonstração**. A demonstração inclui contrato social, certidão federal vencida, CNDT e atestado técnico, todos explicitamente fictícios; não são arquivos oficiais. Novos documentos nessa empresa também são identificados como fictícios. Esses exemplos não constituem uma lista universal de documentos obrigatórios; as exigências vêm de cada edital.
+
+Cadastre documentos por texto/transcrição ou envie PDF de até 20 MB e 200 páginas. Informe tipo documental e validade quando aplicável. O PDF original e texto extraído são preservados separadamente dos editais. PDFs sem texto suficiente exigem outro tratamento; não há OCR empresarial nesta versão. Tipo e validade são metadados declarados pelo usuário, não certificados pelo sistema. A aplicação ainda é um protótipo sem autenticação.
+
+Na aba **Documentação e conformidade** da Análise, escolha a empresa e clique em **Comparar / atualizar documentos**. A comparação considera requisitos de conformidade disponíveis naquele clique. Identifica possíveis correspondências por tipos documentais específicos e compara a validade cadastrada com a data atual. Não valida semanticamente o conteúdo, autenticidade, todas as condições do edital, quantidades ou validade na futura data de habilitação.
+
+- Documento não localizado ou tipo ambíguo: **Precisa de validação**, sem declarar não conformidade.
+- Todos os documentos candidatos do tipo com validade informada vencida: **Possível incompatibilidade documental**, com justificativa e evidências.
+- Documento candidato encontrado: continua **Precisa de validação**; não há confirmação positiva automática.
+
+O analista pode registrar **Empresa conforme** (exige evidência), **Precisa de validação** ou **Empresa não conforme / avaliar esforço**. Exigem responsável e justificativa. Ação necessária, dias e custo estimados são opcionais para registrar avaliação de adequação. Nenhuma dessas decisões altera a interpretação original do edital. Histórico é preservado; alterações na versão do requisito, adição de documentos ou mudança da data de referência tornam a avaliação anterior desatualizada ao atualizar a comparação.
+
+APIs: `GET/POST /companies`, `POST /companies/demo`, `GET /companies/{id}`, `POST /companies/{id}/evidence`, `POST /companies/{id}/evidence/upload`, `GET /companies/{id}/comparison/{document_id}` e `POST /companies/{id}/assessments/{requirement_id}`. No frontend, acessíveis pelo proxy `/api/companies`.
 
 ### Agrupamento de páginas
 
