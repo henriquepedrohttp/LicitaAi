@@ -1,0 +1,3 @@
+import Link from "next/link";
+import HealthStatus from "./health-status";
+export default function Home() {return <><div className="eyebrow">WORKSPACE DE LICITAÇÕES</div><h1>Da exigência à decisão.<br/>Com evidências no caminho.</h1><p>Base inicial do LicitaAI. Comece pelo Radar para selecionar uma oportunidade.</p><div className="grid"><section className="card"><h2>Uma jornada verificável</h2><p>Encontre oportunidades, confira requisitos na fonte e registre uma decisão humana.</p><Link href="/radar">Abrir Radar →</Link></section><section className="card"><h2>Conexão dos serviços</h2><HealthStatus/></section></div><p className="notice">Os módulos estão em construção. Nenhum edital foi processado nesta base.</p></>}
