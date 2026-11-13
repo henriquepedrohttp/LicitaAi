@@ -1,4 +1,4 @@
 import AnalysisWorkspace from "./workspace";
 export default function AnalysisPage() {
-  return <><div className="eyebrow">LICITAAI / ANÁLISE</div><h1>Confira o documento na fonte.</h1><p>Importe um PDF e confira o texto extraído de cada página antes de avançar para os requisitos.</p><AnalysisWorkspace /></>;
+  return <><div className="page-head"><div><h1>Análise de editais</h1><p>Transforme o edital em uma lista de requisitos verificáveis, cada um ligado à página de origem.</p></div></div><AnalysisWorkspace /></>;
 }
