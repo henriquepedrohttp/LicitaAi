@@ -17,4 +17,3 @@ export default function DemoSection({ tab, profile }: { tab: string; profile: Pr
   if (tab === 'tecnica') return <section className="card"><h2>Capacidade técnica</h2><p>Experiência, projetos e especialidades declarados pela empresa.</p><Facts company={profile} technical /><div className="pitch-review"><span className="badge">Declarações organizadas</span><p>Capacidades separadas das evidências para uma avaliação rastreável.</p></div></section>;
   return <section className="card"><div className="pitch-section-heading"><div><h2>Visão geral</h2><p>Perfil empresarial estruturado e reutilizável.</p></div><span className="badge">Informações declaradas</span></div><Facts company={profile} /></section>;
 }
-
