@@ -47,21 +47,25 @@ export default function AnalysisWorkspace(){
   }catch(e){setError(e instanceof TypeError ? "Falha de conexão durante o envio. Tente novamente." : e instanceof Error?e.message:"Falha ao enviar documento.");}finally{setBusy(false);}
  }
  const active=document?.pages[page-1];
+ const step=document?2:0;
  return <>
+  <ol className="stepper" aria-label="Etapas da análise">
+   {[["Importar edital","PDF de até 20 MB"],["Conferir a fonte","Texto ao lado do original"],["Extrair requisitos","Conformidade e objeto"],["Validar","Revisão humana de cada item"]].map(([t,d],i)=><li key={t} className={i<step?"done":i===step?"current":""} aria-current={i===step?"step":undefined}><strong>{t}</strong>{d}</li>)}
+  </ol>
   <form className="card upload-form" onSubmit={upload}>
    <div><label htmlFor="pdf"><strong>Importar edital ou anexo</strong></label><p>PDF de até 20 MB e 200 páginas. Documentos ficam salvos para esta demonstração.</p><input ref={input} id="pdf" type="file" accept=".pdf,application/pdf" required disabled={busy}/></div>
    <button disabled={busy||loading} type="submit">{busy?"Processando…":"Enviar e extrair texto"}</button>
   </form>
   {error&&<p className="error" role="alert">{error}</p>}
-  <div aria-live="polite" role="status">{busy&&<p>Processando documento. Aguarde a conclusão.</p>}{loading&&<p>Carregando documentos…</p>}</div>
+  <div aria-live="polite" role="status">{busy&&<p><span className="spinner" aria-hidden="true"/> Processando documento. Aguarde a conclusão.</p>}{loading&&<p><span className="spinner" aria-hidden="true"/> Carregando documentos…</p>}</div>
   <section className="document-list" aria-label="Documentos importados">
    {documents.map(item=><button className={document?.id===item.id?"document-item selected":"document-item"} key={item.id} onClick={()=>select(item.id)} disabled={busy} aria-pressed={document?.id===item.id}><strong>{item.filename}</strong><span>{item.extracted_pages}/{item.page_count} páginas com texto · {item.ocr_pending_pages} com OCR pendente</span></button>)}
   </section>
-  {!document&&!loading&&<section className="card"><h2>Selecione ou importe um documento</h2><p>O PDF e o texto extraído aparecerão lado a lado. Depois, inicie a análise do documento inteiro: conformidade ou requisitos do objeto, em qualquer ordem.</p></section>}
+  {!document&&!loading&&<section className="card"><h2>Comece importando um edital</h2><p>O PDF e o texto extraído aparecerão lado a lado. Depois, inicie a análise do documento inteiro: conformidade ou requisitos do objeto, em qualquer ordem.</p></section>}
   {document&&active&&<>
    <div className="notice"><strong>{document.extracted_pages} de {document.page_count} páginas com texto extraído.</strong> {document.coverage==="partial"?"Cobertura parcial: há páginas que exigem OCR ou revisão manual.":"A extração de texto não garante leitura correta de tabelas nem identificação de todas as exigências."} OCR ainda não executado. A cobertura de requisitos é informada abaixo.</div>
    <div className="page-controls" ref={sourcePanel}><label htmlFor="page">Página para consulta da fonte (não limita a análise)</label><select id="page" value={page} onChange={event=>{setPage(Number(event.target.value));setSourceExcerpt("");}}>{document.pages.map(item=><option value={item.page} key={item.page}>{item.page}{item.status!=="text_extracted"?" — revisão necessária":""}</option>)}</select><a href={`/api/documents/${document.id}/file#page=${page}`} target="_blank" rel="noreferrer">Abrir original em outra aba ↗</a></div>
-   <div className="analysis-columns"><section className="card pdf-panel"><h2>Documento original</h2><iframe key={`${document.id}-${page}`} title={`${document.filename}, página ${page}`} src={`/api/documents/${document.id}/file#page=${page}`} /></section><section className="card text-panel"><h2>Texto extraído · página {page}</h2><p className="eyebrow">{active.status==="text_extracted"?"TEXTO NATIVO · NÃO REVISADO":active.status==="ocr_pending"?"OCR PENDENTE":"FALHA DE EXTRAÇÃO"}</p>{active.warning&&<p className="notice">{active.warning}</p>}{sourceExcerpt&&<blockquote className="source-excerpt"><strong>Trecho do requisito selecionado</strong><br/>{sourceExcerpt}</blockquote>}<pre>{active.text||"Nenhum texto utilizável extraído. Confira o documento original."}</pre></section></div>
+   <div className="analysis-columns"><section className="card pdf-panel"><h2>Documento original</h2><iframe key={`${document.id}-${page}`} title={`${document.filename}, página ${page}`} src={`/api/documents/${document.id}/file#page=${page}`} /></section><section className="card text-panel"><h2>Texto extraído · página {page}</h2><span className={active.status==="text_extracted"?"chip brand":active.status==="ocr_pending"?"chip warn":"chip danger"}>{active.status==="text_extracted"?"Texto do PDF, ainda não revisado":active.status==="ocr_pending"?"Página escaneada: precisa de OCR":"Falha ao ler esta página"}</span>{active.warning&&<p className="notice">{active.warning}</p>}{sourceExcerpt&&<blockquote className="source-excerpt"><strong>Trecho do requisito selecionado</strong><br/>{sourceExcerpt}</blockquote>}<pre>{active.text||"Nenhum texto utilizável extraído. Confira o documento original."}</pre></section></div>
   <Requirements key={document.id} documentId={document.id} page={page} pageText={active.text} pageStatus={active.status} onSource={(target,excerpt)=>{setPage(target);setSourceExcerpt(excerpt);sourcePanel.current?.scrollIntoView({behavior:"smooth",block:"start"});}}/>
   </>}
  </>;
