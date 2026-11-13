@@ -95,3 +95,18 @@ Modelo: https://openrouter.ai/anthropic/claude-haiku-4.5
 ### Porta do backend ocupada
 
 Se `localhost:8000` responder com outra aplicação, configure `BACKEND_PORT=8001` no `.env` da raiz e `API_BASE_URL=http://127.0.0.1:8001` em `frontend/.env.local`. Execute `docker compose up --build -d backend` e reinicie `npm run dev`. A API ficará em `http://localhost:8001/docs`; a porta interna do container continua 8000. Não encerre serviços de outros projetos para liberar a porta.
+
+## Empresas e demonstração para o pitch
+
+Abra `/empresas`: perfil fictício completo, sem chave ou backend. Ao salvar, as alterações ficam neste navegador e sobrevivem ao recarregamento. Para levar as edições a outro notebook, abra **Levar configuração para outro notebook**, exporte o JSON e importe-o no destino. O perfil inicial acompanha o código; o armazenamento do navegador não sincroniza automaticamente entre computadores ou endereços.
+
+Para gravar somente a demonstração em outro notebook:
+
+```bash
+git clone --branch empresas https://github.com/henriquepedrohttp/LicitaAi.git
+cd LicitaAi/frontend
+npm ci
+npm run dev
+```
+
+O cadastro real permanece em `/empresas/cadastro`, protegido por chave, com persistência PostgreSQL e migração explícita. Documentos da apresentação são ilustrativos e não comprovam requisitos. Configuração, endpoints, contrato de Elegibilidade e limites: [docs/EMPRESAS.md](docs/EMPRESAS.md).
